@@ -1,9 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Search(models.Model):
     time_of_search = models.CharField(max_length=50)
     entered_address = models.CharField(max_length=150)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
 
 class AbstractForecast(models.Model):
