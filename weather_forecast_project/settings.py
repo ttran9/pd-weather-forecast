@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    "weather_forecast.apps.WeatherForecastConfig",
     "forecasts.apps.ForecastsConfig",
     'django.contrib.admin',
     'django.contrib.auth',
