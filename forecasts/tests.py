@@ -1,6 +1,6 @@
 from django.test import TestCase
 from .utility import GeocodeApiHelper, ForecastApiHelper
-from weather_forecast.models import Search, HourlyForecast, DailyForecast
+from .models import Search, HourlyForecast, DailyForecast
 
 
 class GeocodeApiHelperTestCase(TestCase):

@@ -1,7 +1,7 @@
 import http.client, json, time, os, datetime
 from pytz import timezone
 
-from weather_forecast.models import Search, HourlyForecast, DailyForecast
+from .models import Search, HourlyForecast, DailyForecast
 
 
 class GeocodeApiHelper:
