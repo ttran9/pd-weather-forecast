@@ -1,7 +1,8 @@
 import http.client, json, time, os, datetime
 from pytz import timezone
-
+from django.contrib.auth.models import AnonymousUser
 from .models import Search, HourlyForecast, DailyForecast
+import urllib.parse 
 
 
 class GeocodeApiHelper:
@@ -15,7 +16,8 @@ class GeocodeApiHelper:
         conn = http.client.HTTPSConnection('maps.googleapis.com')
         headers = {'Content-type': 'application/json'}
         api_key = os.environ['GOOGLE_MAPS_GC_KEY']
-        conn.request('GET', f"/maps/api/geocode/json?address={address}&key={api_key}", headers=headers)
+        encoded_address = urllib.parse.quote_plus(address)
+        conn.request('GET', f"/maps/api/geocode/json?address={encoded_address}&key={api_key}", headers=headers)
         response = conn.getresponse()
         object = response.read()
         json_object = json.loads(object)
@@ -31,8 +33,7 @@ class GeocodeApiHelper:
 class ForecastApiHelper:
 
     def __init__(self):
-        self.daily_forecasts = []
-        self.hourly_forecasts = []
+        self.search = None
         
     def get_forecasts(self, lat, lng, searched_address, user=None):
         api_key = os.environ['DARK_SKY_KEY']
@@ -47,11 +48,12 @@ class ForecastApiHelper:
         search_time_in_milliseconds = content['currently']['time']
         search.time_of_search = self.get_date_from_milliseconds(search_time_in_milliseconds, time_zone)
         search.entered_address = searched_address
+        search.unformatted_time_of_search = search_time_in_milliseconds
 
         hourly_forecasts = content['hourly']['data']
         daily_forecasts = content['daily']['data']
 
-        if user is not None:
+        if user is not None or user is not AnonymousUser:
             search.user = user
         
         search.save() # must persist to be able to write this into the database.
@@ -59,10 +61,11 @@ class ForecastApiHelper:
         self.parse_hourly_forecast(hourly_forecasts, search, time_zone)
         self.parse_daily_forecast(daily_forecasts, search, time_zone)
 
+        self.search = search
 
 
     def get_date_from_milliseconds(self, milliseconds, current_timezone):
-        format = "%b %d %Y at %-I:%M %p"
+        format = "%b %d, %Y at %-I:%M %p"
         current_time = datetime.datetime.fromtimestamp(milliseconds)
         target_time = current_time.astimezone(timezone(current_timezone))
         return target_time.strftime(format)
@@ -75,8 +78,8 @@ class ForecastApiHelper:
             hourly_forecast.summary = h_forecast['summary']
             hourly_forecast.temperature = h_forecast['temperature'] 
             hourly_forecast.time = self.get_date_from_milliseconds(milliseconds, time_zone)
+            hourly_forecast.unformatted_time = milliseconds
             hourly_forecast.save()
-            self.hourly_forecasts.append(hourly_forecast)
 
     def parse_daily_forecast(self, daily_forecasts, search_object, time_zone):
          for d_forecast in daily_forecasts:
@@ -91,6 +94,15 @@ class ForecastApiHelper:
             temp_low_in_milliseconds = d_forecast['temperatureLowTime']
             daily_forecast.low_temperature_time = self.get_date_from_milliseconds(temp_low_in_milliseconds, time_zone)
             daily_forecast.save()
-            self.daily_forecasts.append(daily_forecast)
 
    
+class ParseForecasts:
+    def parse_hourly_forecasts(self, hourly_forecasts):
+        results = []
+        for forecast in hourly_forecasts:
+            forecast_content = []
+            forecast_content.append(forecast.time)
+            forecast_content.append(str(forecast.temperature))
+            results.append(forecast_content)
+        
+        return results

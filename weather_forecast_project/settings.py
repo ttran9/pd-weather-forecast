@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['localhost']
 
 INSTALLED_APPS = [
     "forecasts.apps.ForecastsConfig",
+    "users.apps.UsersConfig",
+    "crispy_forms",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,5 +123,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
+# change setting to use a different bootstrap style than the default (bootstrap 2)
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# redirect to a page after successfully logging in!
+LOGIN_REDIRECT_URL = "forecasts-home"
+
+# tell Django where to find our log-in route.
+# example: when we have come across a page that requires the user to be logged in..
+LOGIN_URL = "login"  # name for the URL pattern in the project's url.py file.

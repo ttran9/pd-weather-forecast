@@ -8,10 +8,10 @@ class GeocodeApiHelperTestCase(TestCase):
         gc_helper = GeocodeApiHelper()
         old_latitude = gc_helper.latitude
         old_longitude = gc_helper.longitude
-        entered_address = '1600+Amphitheatre+Parkway,+Mountain+View,+CA'
+        entered_address = '1600 Amphitheatre Parkway, Mountain View, CA'
         expected_address = "1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA"
         expected_latitude = 37.42231
-        expected_longitude= -122.0846243
+        expected_longitude= -122.0846241
         gc_helper.get_location_content(entered_address)
 
         self.assertNotEqual(old_latitude, gc_helper.latitude)
@@ -25,7 +25,7 @@ class ForecastApiHelperTestCase(TestCase):
     def test_get_forecasts(self):
         fc_helper = ForecastApiHelper()
         latitude = 37.42231
-        longitude= -122.0846243
+        longitude= -122.0846241
         address = "1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA"
         expected_count = 0
         number_of_searches = Search.objects.count()
