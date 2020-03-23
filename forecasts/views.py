@@ -43,8 +43,16 @@ class DailyForecastListView(ListView):
 
     def get_queryset(self):
         search = get_object_or_404(Search, pk=self.kwargs.get("searchId"))
-        return DailyForecast.objects.filter(search=search)
+        # TODO: re-do the parsing because the pagination is no longer being used when parsing the daily forecasts the way i am.
+        daily_forecasts = DailyForecast.objects.filter(search=search)
+        pf = ParseForecasts()
+        return pf.parse_daily_forecasts(daily_forecasts)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['searchId'] = self.kwargs['searchId']
+        return context
+        
 
 class HourlyForecastListView(ListView):
     model = HourlyForecast
@@ -57,6 +65,11 @@ class HourlyForecastListView(ListView):
         hourly_forecasts = HourlyForecast.objects.filter(search=search)
         pf = ParseForecasts()
         return pf.parse_hourly_forecasts(hourly_forecasts)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['searchId'] = self.kwargs['searchId']
+        return context
 
 
 class SearchListView(LoginRequiredMixin, ListView):
