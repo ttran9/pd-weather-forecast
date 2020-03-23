@@ -15,9 +15,8 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
         
     <script type="text/javascript">
-        var low_forecast_list = {{forecasts.0|safe}};
-        var high_forecast_list = {{forecasts.1|safe}};
-        $(window).load(generateDailyForecasts(low_forecast_list, high_forecast_list));
+        var dailyForecastList = {{forecasts|safe}};
+        $(window).load(generateDailyForecasts(dailyForecastList));
     </script>
         
     <div id="lowTemperatureContainer" style="height: 370px; width: 100%;"></div>
