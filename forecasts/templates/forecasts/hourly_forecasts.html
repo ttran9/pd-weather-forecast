@@ -1,7 +1,25 @@
 {% extends "forecasts/base.html" %}
+{% load static %}
 
 {% block content %}
 {% if forecasts|length > 0 %}
+
+    <h1><a href="{% url 'view-dailyforecasts' searchId %}">View Daily Forecast!</a></h1>
+
+    <script src="{% static 'forecasts/js/display_forecasts.js' %}"></script>
+    <script src="{% static 'forecasts/js/hourly_forecasts.js' %}"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+    crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
+        
+    <script type="text/javascript">
+        var forecasts = {{forecasts|safe}};
+        $(window).load(generateHourlyForecast(forecasts));
+    </script>
+        
+    <div id="hourlyForecastContainer" style="height: 370px; width: 100%;"></div>
 
     {% if is_paginated %}
 
@@ -28,6 +46,5 @@
 {% else %}
     <p> No hourly forecasts available!</p>
 {% endif %}
-
 
 {% endblock content %}
