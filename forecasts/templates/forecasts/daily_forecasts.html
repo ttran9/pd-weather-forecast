@@ -1,5 +1,53 @@
 {% extends "forecasts/base.html" %}
+{% load static %}
 
 {% block content %}
+{% if forecasts|length > 0 %}
+
+    <h1><a href="{% url 'view-hourlyforecasts' searchId %}">View Hourly Forecast!</a></h1>
+
+    <script src="{% static 'forecasts/js/display_forecasts.js' %}"></script>
+    <script src="{% static 'forecasts/js/daily_forecasts.js' %}"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+    crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
+        
+    <script type="text/javascript">
+        var low_forecast_list = {{forecasts.0|safe}};
+        var high_forecast_list = {{forecasts.1|safe}};
+        $(window).load(generateDailyForecasts(low_forecast_list, high_forecast_list));
+    </script>
+        
+    <div id="lowTemperatureContainer" style="height: 370px; width: 100%;"></div>
+
+    <div id="highTemperatureContainer" style="height: 370px; width: 100%;"></div>
+
+    {% if is_paginated %}
+
+        {% if page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number}}">Next</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+    {% endif %}
+
+{% else %}
+    <p> No hourly forecasts available!</p>
+{% endif %}
 
 {% endblock content %}
