@@ -29,9 +29,7 @@ class SearchCreateView(CreateView):
         fc_helper.get_forecasts(latitude, longitude, formatted_address, user)
 
         form.instance = fc_helper.search
-
-        # if user.is_authenticated:
-        #     form.instance.user = user
+        
         return super().form_valid(form)
 
 
@@ -43,7 +41,6 @@ class DailyForecastListView(ListView):
 
     def get_queryset(self):
         search = get_object_or_404(Search, pk=self.kwargs.get("searchId"))
-        # TODO: re-do the parsing because the pagination is no longer being used when parsing the daily forecasts the way i am.
         daily_forecasts = DailyForecast.objects.filter(search=search)
         pf = ParseForecasts()
         return pf.parse_daily_forecasts(daily_forecasts)
