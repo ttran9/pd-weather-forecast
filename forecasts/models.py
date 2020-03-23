@@ -34,10 +34,7 @@ class DailyForecast(AbstractForecast):
     low_temperature_time = models.CharField(max_length=50)
     low_temperature = models.DecimalField(max_digits=4, decimal_places=2)
 
-    def parse_low_temperature_to_json(self):
-        df_json = {'label': self.low_temperature_time, 'y': float(self.low_temperature)}
-        return df_json 
-
-    def parse_high_temperature_to_json(self):
-        df_json = {'label': self.high_temperature_time, 'y': float(self.high_temperature)}
-        return df_json 
+    def parse_temperatures_to_json(self):
+        df_json = {"lowTemperature": {'label': self.low_temperature_time, 'y': float(self.low_temperature)}, 
+        "highTemperature": {'label': self.high_temperature_time, 'y': float(self.high_temperature)}}
+        return df_json

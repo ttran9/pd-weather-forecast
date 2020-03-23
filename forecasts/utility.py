@@ -105,13 +105,6 @@ class ParseForecasts:
 
     def parse_daily_forecasts(self, daily_forecasts):
         results = []
-        low_temperatures = []
-        high_temperatures = []
         for forecast in daily_forecasts:
-            low_temperature_content = forecast.parse_low_temperature_to_json()
-            high_temperature_content = forecast.parse_high_temperature_to_json()
-            low_temperatures.append(low_temperature_content)
-            high_temperatures.append(high_temperature_content)
-        results.append(low_temperatures)
-        results.append(high_temperatures)
+            results.append(forecast.parse_temperatures_to_json())
         return results
