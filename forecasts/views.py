@@ -4,7 +4,7 @@ from django.views.generic import (
     ListView
 )
 from .models import Search, DailyForecast, HourlyForecast
-from .utility import GeocodeApiHelper, ForecastApiHelper, ParseForecasts
+from .utility import GeocodeApiHelper, ForecastApiHelper, ParseForecasts, ApiInvokeHelper
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -19,14 +19,8 @@ class SearchCreateView(CreateView):
         user = self.request.user
         address = form.instance.entered_address
 
-        # make the api calls
-        gc_helper = GeocodeApiHelper()
-        fc_helper = ForecastApiHelper()
-        gc_helper.get_location_content(address)
-        latitude = gc_helper.latitude
-        longitude = gc_helper.longitude
-        formatted_address = gc_helper.address
-        fc_helper.get_forecasts(latitude, longitude, formatted_address, user)
+        helper = ApiInvokeHelper()
+        fc_helper = helper.make_search(address, user)
 
         form.instance = fc_helper.search
         
