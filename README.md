@@ -5,21 +5,23 @@
 - This project will allow me to practice Python, Django, and Selenium by creating an application which uses the Darksky API (to get weather forecasts from a latitude and longitude pair obtained from an entered user address). The user address is passed into the Google Geocoding API which will ultimately return the latitude and longitude as well as the entered address which will be formatted. 
     
 # TODO:
-- Create models to hold the data such as: Daily and Hourly forecasts and searches.
-- Create views to respond to when user requests a page.
-- Create url mappings for a variety of routes.
-- Create tests (view below for more information)
+- Refactor code. While writing this I was more worried about functionality so there will definitely by areas with sloppy code and possibly inconsistent styling such as inconsistent variable naming and such.
 
 # Tests:
     - Pytests:
-        - Make a sample Darksky API call
-        - Make a sample Google Geocoding API call.
-        - Make a Geocoding API call and using the result of that to make a Darksky API call which should result in having a list of Daily and Hourly forecasts.
+        - This can be found in forecasts/tests.py/BrowserTests
+        1) Make a sample Google Geocoding API call.
+        2) Make a Geocoding API call and using the result of that to make a Darksky API call which should result in having a list of Daily and Hourly forecasts.
 
     - Selenium Based Tests:
-        - Make a search while not logged in.
-        - Make a search while logged in. 
-        - When logged in go to the page with prior searches.
-            - Pick a search to look at.
-                - View the daily and hourly forecasts.
-        - When logged in go to the page with prior searches (but user has not made any).
+        - This can be found in forecasts/tests.py/BrowserTests
+        1) make the search
+	        - as not logged in
+	        - as logged in
+        - once making the search just try to find the chart based on id
+        - for both cases make sure you can view the daily forecasts and find the two charts based on id.
+        - try to also click on the next and previous pagination buttons.
+	
+        2) try to click on the prior searches
+            - do this only as logged in
+            - click on the next and previous pagination buttons.
