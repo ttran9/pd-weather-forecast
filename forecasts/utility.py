@@ -3,6 +3,7 @@ from pytz import timezone
 from django.contrib.auth.models import AnonymousUser
 from .models import Search, HourlyForecast, DailyForecast
 import urllib.parse 
+from django.contrib.auth.models import User
 
 
 class GeocodeApiHelper:
@@ -53,7 +54,7 @@ class ForecastApiHelper:
         hourly_forecasts = content['hourly']['data']
         daily_forecasts = content['daily']['data']
 
-        if user is not None or user is not AnonymousUser:
+        if user is not None and user.is_authenticated:
             search.user = user
         
         search.save() # must persist to be able to write this into the database.
@@ -108,3 +109,66 @@ class ParseForecasts:
         for forecast in daily_forecasts:
             results.append(forecast.parse_temperatures_to_json())
         return results
+
+
+class ApiInvokeHelper:
+    def make_search(self, address, user):
+        # make the api calls
+        gc_helper = GeocodeApiHelper()
+        fc_helper = ForecastApiHelper()
+        gc_helper.get_location_content(address)
+        latitude = gc_helper.latitude
+        longitude = gc_helper.longitude
+        formatted_address = gc_helper.address
+        fc_helper.get_forecasts(latitude, longitude, formatted_address, user)
+        return fc_helper
+
+
+class TestDataGenerator:
+    TEST_NAME_ONE = "greg"
+    TEST_NAME_TWO = "snickers"
+    TEST_LAST_NAME_ONE = "tran-ling"
+    TEST_PASSWORD = "password321"
+    TEST_EMAIL_ONE = "toddtran10@gmail.com"
+    TEST_EMAIL_TWO = "wptran58@gmail.com"
+    TEST_EMAIL_THREE = "toddtran9@gmail.com"
+    TEST_SAMPLE_ADDRESS = "1600 amphitheatre parkway"
+
+    def create_sample_data(self):
+        self.create_users()
+        self.create_searches()
+  
+    def create_users(self):
+        user_one = User.objects.create_user(
+            username=self.TEST_NAME_ONE,
+            password=self.TEST_PASSWORD,
+            first_name=self.TEST_NAME_ONE,
+            last_name=self.TEST_LAST_NAME_ONE,
+            email=self.TEST_EMAIL_ONE,
+        )
+        user_two = User.objects.create_user(
+            username=self.TEST_NAME_TWO,
+            password=self.TEST_PASSWORD,
+            first_name=self.TEST_NAME_TWO,
+            last_name=self.TEST_LAST_NAME_ONE,
+            email=self.TEST_EMAIL_TWO,
+        )
+
+    def create_searches(self):
+        first_user = User.objects.first()
+        api_helper = ApiInvokeHelper()
+
+        # make six sample searches to populate the database (to have data as the first sample user).
+        api_helper.make_search(self.TEST_SAMPLE_ADDRESS, first_user)
+        api_helper.make_search(self.TEST_SAMPLE_ADDRESS, first_user)
+        api_helper.make_search(self.TEST_SAMPLE_ADDRESS, first_user)
+        api_helper.make_search(self.TEST_SAMPLE_ADDRESS, first_user)
+        api_helper.make_search(self.TEST_SAMPLE_ADDRESS, first_user)
+        api_helper.make_search(self.TEST_SAMPLE_ADDRESS, first_user)
+
+    def delete_sample_data(self):
+        user_one = User.objects.get(username=self.TEST_NAME_ONE)
+        user_one.delete()
+        user_two = User.objects.get(username=self.TEST_NAME_TWO)
+        user_two.delete()
+
