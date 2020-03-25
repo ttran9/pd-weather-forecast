@@ -9,12 +9,10 @@
 
 # Tests:
     - Pytests:
-        - This can be found in forecasts/tests.py/BrowserTests
         1) Make a sample Google Geocoding API call.
         2) Make a Geocoding API call and using the result of that to make a Darksky API call which should result in having a list of Daily and Hourly forecasts.
 
     - Selenium Based Tests:
-        - This can be found in forecasts/tests.py/BrowserTests
         1) make the search
 	        - as not logged in
 	        - as logged in
