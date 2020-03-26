@@ -138,3 +138,10 @@ LOGIN_REDIRECT_URL = "forecasts-home"
 # tell Django where to find our log-in route.
 # example: when we have come across a page that requires the user to be logged in..
 LOGIN_URL = "login"  # name for the URL pattern in the project's url.py file.
+
+EMAIL_BACKEND = os.environ["DJANGO_APP_EMAIL_BACKEND"]
+EMAIL_HOST = os.environ["DJANGO_APP_EMAIL_HOST"]
+EMAIL_PORT = os.environ["DJANGO_APP_EMAIL_PORT"]
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ["DJANGO_APP_TEST_GMAIL_USER"]
+EMAIL_HOST_PASSWORD = os.environ["DJANGO_APP_TEST_GMAIL_PASSWORD"]
