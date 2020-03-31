@@ -5,20 +5,26 @@ from .models import Search, HourlyForecast, DailyForecast
 import urllib.parse 
 from django.contrib.auth.models import User
 
+class ApiHelper:
 
-class GeocodeApiHelper:
+    def get_keys(self):
+        with open('/etc/config.json') as config_file:
+            config = json.load(config_file)
+        return config
+
+class GeocodeApiHelper(ApiHelper):
 
     def __init__(self):
         self.address = ""
         self.latitude = 0.0
         self.longitude = 0.0
+        self.api_key = self.get_keys()['GOOGLE_MAPS_GC_KEY']
 
     def get_location_content(self, address):
         conn = http.client.HTTPSConnection('maps.googleapis.com')
         headers = {'Content-type': 'application/json'}
-        api_key = os.environ['GOOGLE_MAPS_GC_KEY']
         encoded_address = urllib.parse.quote_plus(address)
-        conn.request('GET', f"/maps/api/geocode/json?address={encoded_address}&key={api_key}", headers=headers)
+        conn.request('GET', f"/maps/api/geocode/json?address={encoded_address}&key={self.api_key}", headers=headers)
         response = conn.getresponse()
         object = response.read()
         json_object = json.loads(object)
@@ -31,16 +37,16 @@ class GeocodeApiHelper:
         self.address = location_object['formatted_address']
 
 
-class ForecastApiHelper:
+class ForecastApiHelper(ApiHelper):
 
     def __init__(self):
         self.search = None
+        self.api_key = self.get_keys()['DARK_SKY_KEY']
         
     def get_forecasts(self, lat, lng, searched_address, user=None):
-        api_key = os.environ['DARK_SKY_KEY']
         conn = http.client.HTTPSConnection('api.darksky.net')
         headers = {'Content-type': 'application/json'}
-        conn.request('GET', f"/forecast/{api_key}/{lat},{lng}", headers=headers)
+        conn.request('GET', f"/forecast/{self.api_key}/{lat},{lng}", headers=headers)
         response = conn.getresponse()
         object = response.read()
         content = json.loads(object)
