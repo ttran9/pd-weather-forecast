@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import json
+
+with open('/etc/config.json') as config_file:
+    config = json.load(config_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['WEATHER_FORECAST_SECRET_KEY']
+SECRET_KEY = config['WEATHER_FORECAST_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG_FLAG") == "True"
+DEBUG = os.environ.get("DEBUG_FLAG") == "True" 
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['34.222.112.249', 'ttforecast.toddtran.com', 'www.ttforecast.toddtran.com']
 
 
 # Application definition
@@ -79,11 +83,11 @@ WSGI_APPLICATION = 'weather_forecast_project.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ["POSTGRES_DB"],
-        "USER": os.environ["POSTGRES_USER_NAME"],
-        "PASSWORD": os.environ["POSTGRES_PW"],
-        "HOST": os.environ["POSTGRES_HOST"],
-        "PORT": os.environ["POSTGRES_PORT"],
+        "NAME": config["POSTGRES_DB"],
+        "USER": config["POSTGRES_USER_NAME"],
+        "PASSWORD": config["POSTGRES_PW"],
+        "HOST": config["POSTGRES_HOST"],
+        "PORT": config["POSTGRES_PORT"],
     }
 }
 
@@ -138,3 +142,11 @@ LOGIN_REDIRECT_URL = "forecasts-home"
 # tell Django where to find our log-in route.
 # example: when we have come across a page that requires the user to be logged in..
 LOGIN_URL = "login"  # name for the URL pattern in the project's url.py file.
+
+EMAIL_BACKEND = config["DJANGO_APP_EMAIL_BACKEND"]
+EMAIL_HOST = config["DJANGO_APP_EMAIL_HOST"]
+EMAIL_PORT = config["DJANGO_APP_EMAIL_PORT"]
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config["DJANGO_APP_TEST_EMAIL_USER"]
+EMAIL_HOST_PASSWORD = config["DJANGO_APP_TEST_EMAIL_PASSWORD"]
+
