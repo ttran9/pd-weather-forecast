@@ -1,6 +1,6 @@
 # Live Demo
 
-- The live demo can be found [here](https://ttforecast.toddtran.com/).
+- The live demo can be found [here](https://djforecast.toddtran.com/).
   - This is hosted on an AWS Lightsail instance. It is an Ubuntu 18.04 LTS image that utilizes a Docker PostgreSQL image to store content such as searches.
 
 # Overview
