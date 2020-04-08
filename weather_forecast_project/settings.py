@@ -29,7 +29,7 @@ SECRET_KEY = config['WEATHER_FORECAST_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG_FLAG") == "True" 
 
-ALLOWED_HOSTS = ['34.222.112.249', 'ttforecast.toddtran.com', 'www.ttforecast.toddtran.com']
+ALLOWED_HOSTS = ['34.222.112.249', 'djforecast.toddtran.com', 'www.djforecast.toddtran.com']
 
 
 # Application definition
