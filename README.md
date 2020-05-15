@@ -1,7 +1,8 @@
 # Live Demo
 
 - The live demo can be found [here](https://djforecast.toddtran.com/).
-  - This is hosted on an AWS Lightsail instance. It is an Ubuntu 18.04 LTS image that utilizes a Docker PostgreSQL image to store content such as searches.
+  - This is hosted on Linode. It is an Ubuntu 18.04 LTS image that utilizes a Docker PostgreSQL image to store content such as searches.
+  - This was previously hosted on an AWS Lightsail instance but I wanted to try Linode out and for my use case there is no real difference between the two services.
 
 # Overview
 
